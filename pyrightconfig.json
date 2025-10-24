@@ -1,0 +1,24 @@
+{
+    "pythonVersion": "3.13",
+    "pythonPlatform": "Windows",
+    "pythonPath": "c:/Users/rachu/Downloads/AI resume2/ai-career-platform/backend/ai_career_env/Scripts/python.exe",
+    "typeCheckingMode": "basic",
+    "autoSearchPaths": true,
+    "extraPaths": [
+        "c:/Users/rachu/Downloads/AI resume2/ai-career-platform/backend",
+        "c:/Users/rachu/Downloads/AI resume2/ai-career-platform/backend/ai_career_env/Lib/site-packages"
+    ],
+    "venvPath": "c:/Users/rachu/Downloads/AI resume2/ai-career-platform/backend",
+    "venv": "ai_career_env",
+    "executionEnvironments": [
+        {
+            "root": "c:/Users/rachu/Downloads/AI resume2/ai-career-platform/backend",
+            "pythonVersion": "3.13",
+            "pythonPlatform": "Windows",
+            "pythonPath": "c:/Users/rachu/Downloads/AI resume2/ai-career-platform/backend/ai_career_env/Scripts/python.exe",
+            "extraPaths": [
+                "c:/Users/rachu/Downloads/AI resume2/ai-career-platform/backend/ai_career_env/Lib/site-packages"
+            ]
+        }
+    ]
+}

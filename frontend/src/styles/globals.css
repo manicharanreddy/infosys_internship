@@ -1,0 +1,323 @@
+@import './backgrounds.css';
+
+:root {
+  --primary-color: #ee75b0;
+  --primary-hover: #e94a8f;
+  --secondary-color: #6d5ef2;
+  --accent-color: #0ea5e9;
+  --light-color: #f8fafc;
+  --dark-color: #0f172a;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --gray-color: #94a3b8;
+  --light-gray: #f1f5f9;
+  --border-radius: 12px;
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  --gradient-secondary: linear-gradient(135deg, var(--accent-color), #0284c7);
+  --gradient-tertiary: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --gradient-quaternary: linear-gradient(135deg, #ec4899, #f43f5e);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  color: var(--dark-color);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Animated background elements */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(238, 117, 176, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(109, 94, 242, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 50% 30%, rgba(14, 165, 233, 0.03) 0%, transparent 30%);
+  z-index: -1;
+  animation: backgroundShift 20s ease-in-out infinite alternate;
+}
+
+/* Floating animation elements */
+.floating-shape {
+  position: fixed;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(238, 117, 176, 0.1), rgba(109, 94, 242, 0.05));
+  z-index: -1;
+  pointer-events: none;
+  animation: float 15s infinite ease-in-out;
+}
+
+.floating-shape:nth-child(1) {
+  width: 150px;
+  height: 150px;
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.floating-shape:nth-child(2) {
+  width: 100px;
+  height: 100px;
+  top: 60%;
+  left: 80%;
+  animation-delay: -5s;
+}
+
+.floating-shape:nth-child(3) {
+  width: 80px;
+  height: 80px;
+  top: 30%;
+  left: 85%;
+  animation-delay: -10s;
+}
+
+.floating-shape:nth-child(4) {
+  width: 120px;
+  height: 120px;
+  top: 70%;
+  left: 15%;
+  animation-delay: -15s;
+}
+
+/* Professional animated background for components */
+.component-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.component-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(238, 117, 176, 0.03) 0%, transparent 25%),
+    radial-gradient(circle at 90% 80%, rgba(109, 94, 242, 0.03) 0%, transparent 25%),
+    radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.02) 0%, transparent 30%);
+  z-index: -1;
+  animation: backgroundShift 30s ease-in-out infinite alternate;
+}
+
+.component-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.1) 50%, 
+      transparent 100%);
+  z-index: -1;
+  animation: shimmerEffect 8s linear infinite;
+  opacity: 0.5;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-20px) translateX(10px) rotate(10deg);
+  }
+  66% {
+    transform: translateY(10px) translateX(-15px) rotate(-10deg);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+}
+
+@keyframes backgroundShift {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmerEffect {
+  0% {
+    transform: translateX(-50%) translateY(-50%);
+  }
+  100% {
+    transform: translateX(0%) translateY(0%);
+  }
+}
+
+@keyframes waveEffect {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Utility classes */
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.5s ease-out forwards;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Button animations */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:disabled::before {
+  display: none;
+}
+
+/* Card animations */
+.card {
+  transition: var(--transition);
+  transform: translateY(0);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow-hover);
+}
+
+/* Input animations */
+input, select, textarea {
+  transition: var(--transition);
+}
+
+input:focus, select:focus, textarea:focus {
+  transform: scale(1.02);
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}

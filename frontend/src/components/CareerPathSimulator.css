@@ -1,0 +1,495 @@
+.career-path-simulator {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: var(--border-radius);
+  padding: 2.5rem;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 2rem;
+  animation: fadeIn 0.6s ease-out;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.career-path-simulator::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: 
+    linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(238, 117, 176, 0.15) 25%, 
+      transparent 50%, 
+      rgba(109, 94, 242, 0.15) 75%, 
+      transparent 100%);
+  z-index: -1;
+  animation: waveMotion 12s linear infinite;
+  opacity: 0.6;
+}
+
+
+
+.career-path-simulator:hover {
+  box-shadow: var(--box-shadow-hover);
+  transform: translateY(-5px);
+}
+
+.career-path-simulator h2 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  border-bottom: 3px solid var(--accent-color);
+  padding-bottom: 1rem;
+  display: inline-block;
+  position: relative;
+}
+
+.career-path-simulator h2::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--secondary-color);
+  animation: underlineGrow 1s ease-out forwards;
+}
+
+.career-path-simulator form {
+  margin-bottom: 2rem;
+}
+
+.career-path-simulator form div {
+  margin-bottom: 1.5rem;
+}
+
+.career-path-simulator label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  font-size: 1.1rem;
+}
+
+.career-path-simulator input,
+.career-path-simulator select {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.career-path-simulator input::before,
+.career-path-simulator select::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(238, 117, 176, 0.05) 50%, 
+      transparent 100%);
+  animation: waveEffect 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.career-path-simulator input:hover::before,
+.career-path-simulator select:hover::before {
+  opacity: 1;
+}
+
+.career-path-simulator input:focus,
+.career-path-simulator select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(238, 117, 176, 0.2);
+  transform: scale(1.02);
+}
+
+.career-path-simulator button {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: var(--transition);
+  box-shadow: 0 4px 15px rgba(238, 117, 176, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.career-path-simulator button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: 0.5s;
+}
+
+.career-path-simulator button:hover::before {
+  left: 100%;
+}
+
+.career-path-simulator button:hover {
+  background: var(--gradient-secondary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(109, 94, 242, 0.4);
+}
+
+.career-path-simulator button:disabled {
+  background: var(--gray-color);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.career-path-simulator button:disabled::before {
+  display: none;
+}
+
+.simulation-result {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  margin-top: 2rem;
+  animation: slideInLeft 0.5s ease-out;
+  border-left: 5px solid var(--accent-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.simulation-result::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.2) 0%, transparent 20%);
+  animation: subtlePulse 4s infinite ease-in-out;
+}
+
+.simulation-result h3 {
+  color: var(--secondary-color);
+  margin-bottom: 1.5rem;
+  font-size: 1.7rem;
+}
+
+.simulation-result h4 {
+  color: var(--primary-color);
+  margin: 1.2rem 0 0.8rem 0;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.simulation-result p {
+  margin: 0.8rem 0;
+  font-size: 1.1rem;
+}
+
+/* Enhanced career progression timeline */
+.career-progression-container {
+  margin: 2rem 0;
+}
+
+.career-timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+.career-timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+  border-radius: 2px;
+}
+
+.career-step-card {
+  display: flex;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.step-indicator {
+  position: absolute;
+  left: -40px;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+.step-connector {
+  width: 2px;
+  height: 100%;
+  background: var(--gray-color);
+  margin-top: 5px;
+}
+
+.step-content {
+  flex: 1;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid var(--accent-color);
+  transition: var(--transition);
+}
+
+.step-content:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.step-role {
+  color: var(--dark-color);
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+}
+
+.step-timeframe {
+  color: var(--accent-color);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.skills-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.skills-container h6 {
+  margin: 0 0 0.8rem 0;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.skill-tag.required {
+  background: linear-gradient(135deg, #d1fae5 0%, #bbf7d0 100%);
+  border: 1px solid var(--success-color);
+  color: #065f46;
+}
+
+.skill-tag.to-acquire {
+  background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+  border: 1px solid var(--warning-color);
+  color: #92400e;
+}
+
+.skill-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Job recommendations section */
+.job-recommendations-section {
+  margin: 2rem 0;
+}
+
+.job-recommendations-section h4 {
+  margin-bottom: 1.5rem;
+}
+
+.job-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.job-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid var(--primary-color);
+  transition: var(--transition);
+}
+
+.job-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.job-title {
+  color: var(--dark-color);
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.match-score-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.job-details p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: var(--gray-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.similarity-score {
+  font-weight: 600;
+  color: var(--dark-color) !important;
+}
+
+
+
+.error {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: var(--danger-color);
+  padding: 1.2rem;
+  border-radius: var(--border-radius);
+  border-left: 5px solid var(--danger-color);
+  margin: 1rem 0;
+  animation: pulse 2s infinite;
+}
+
+/* Additional animations */
+@keyframes underlineGrow {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 50px;
+  }
+}
+
+@keyframes waveEffect {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100px 0;
+  }
+}
+
+@keyframes shimmerEffect {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes subtlePulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes backgroundShift {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+@keyframes waveMotion {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .career-path-simulator {
+    padding: 1.5rem;
+  }
+  
+  .career-path-simulator h2 {
+    font-size: 1.7rem;
+  }
+  
+  .simulation-result {
+    padding: 1.5rem;
+  }
+  
+  .simulation-result h3 {
+    font-size: 1.5rem;
+  }
+}
