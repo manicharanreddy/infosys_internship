@@ -1,0 +1,229 @@
+.sidebar {
+  width: 300px;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a2a6c 0%, #2a5298 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.sidebar:hover {
+  box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-header {
+  padding: 30px 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #ffffff, #a0c4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 25px 0;
+  overflow-y: auto;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  margin-bottom: 10px;
+}
+
+.sidebar-link {
+  width: 100%;
+  padding: 18px 25px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0 50px 50px 0;
+  margin-right: 15px;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: translateX(8px);
+}
+
+.sidebar-link.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-left: 4px solid #4cc9f0;
+}
+
+.sidebar-link.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(to bottom, #4cc9f0, #4361ee);
+}
+
+.sidebar-icon {
+  margin-right: 20px;
+  font-size: 1.5rem;
+  width: 30px;
+  text-align: center;
+}
+
+.sidebar-text {
+  flex: 1;
+}
+
+.sidebar-user {
+  padding: 25px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-right: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5px;
+}
+
+.user-email {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logout-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 80px;
+  }
+  
+  .sidebar-header h2,
+  .sidebar-text,
+  .user-details,
+  .logout-button span {
+    display: none;
+  }
+  
+  .sidebar-icon {
+    margin-right: 0;
+    font-size: 1.7rem;
+  }
+  
+  .sidebar-link {
+    justify-content: center;
+    padding: 25px 0;
+  }
+  
+  .user-info {
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+  
+  .user-avatar {
+    margin-right: 0;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .sidebar-user {
+    padding: 20px 15px;
+  }
+}
+
+/* Dark mode styles */
+body.dark-mode .sidebar {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+body.dark-mode .sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .sidebar-link.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .logout-button {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .logout-button:hover {
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+}
