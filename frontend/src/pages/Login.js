@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/globals.css';
 import './Auth.css';
 
-const Login = () => {
+const Login = ({ updateUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -34,6 +34,11 @@ const Login = () => {
           email: data.email
         };
         localStorage.setItem('user', JSON.stringify(userData));
+        
+        // Update user state in App component
+        if (updateUser) {
+          updateUser(userData);
+        }
         
         // Redirect to dashboard
         navigate('/dashboard');

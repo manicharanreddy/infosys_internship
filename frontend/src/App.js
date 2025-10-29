@@ -44,12 +44,33 @@ function App() {
 
   useEffect(() => {
     // Check if user is logged in
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
-      setUser(JSON.parse(userData));
-    }
+    const checkUserAuth = () => {
+      const token = localStorage.getItem('token');
+      const userData = localStorage.getItem('user');
+      
+      if (token && userData) {
+        setUser(JSON.parse(userData));
+      } else {
+        setUser(null);
+      }
+    };
+
+    // Check authentication on initial load
+    checkUserAuth();
+
+    // Listen for storage changes (e.g., when user logs in from another tab)
+    const handleStorageChange = (e) => {
+      if (e.key === 'token' || e.key === 'user') {
+        checkUserAuth();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const handleUploadSuccess = (extractedInfo) => {
@@ -69,13 +90,18 @@ function App() {
     return localStorage.getItem('token') && localStorage.getItem('user');
   };
 
+  // Function to update user state (can be called after login)
+  const updateUser = (userData) => {
+    setUser(userData);
+  };
+
   return (
     <div className="App">
       <ThemeToggle />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login updateUser={updateUser} />} />
+        <Route path="/register" element={<Register updateUser={updateUser} />} />
         <Route path="/dashboard" element={isAuthenticated() ? (
           <div className="app-layout">
             <Sidebar user={user} onLogout={handleLogout} />
