@@ -58,6 +58,11 @@ const Dashboard = () => {
       name: "Interview Practice",
       icon: "💬",
       description: "Prepare for interviews with AI-generated questions tailored to your target role. Practice your responses and get feedback to improve your interview performance."
+    },
+    {
+      name: "AI Mentor Chat",
+      icon: "🤖",
+      description: "Get personalized career guidance, skill recommendations, and project ideas from our AI mentor based on your resume and career goals. Ask questions about career development, skill progression, and job market trends."
     }
   ];
 

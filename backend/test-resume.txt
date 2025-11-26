@@ -1,0 +1,14 @@
+John Doe
+Software Engineer
+
+Experience:
+I worked as a software developer for 5 years at various tech companies.
+
+Skills:
+- JavaScript
+- Python
+- React
+- Node.js
+
+Education:
+Bachelor of Science in Computer Science

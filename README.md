@@ -29,6 +29,11 @@ An AI-powered career development platform that helps users optimize their resume
    - Converts resume information into a professional portfolio
    - Generates project ideas and portfolio website
 
+7. **AI Mentor Chat**
+   - Get personalized career guidance based on your resume and goals
+   - Ask questions about career paths, skill development, and project ideas
+   - Receive tailored advice for your specific situation
+
 ## Technology Stack
 
 ### Frontend
@@ -164,6 +169,7 @@ chmod +x setup.sh
 - `POST /api/skills/predict` - Predict future in-demand skills
 - `POST /api/bias/check` - Check resume for biased language
 - `POST /api/portfolio/generate` - Generate portfolio from resume data
+- `POST /api/career/ai-mentor` - Get AI mentor responses for career guidance
 
 ## Future Enhancements
 

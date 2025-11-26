@@ -61,6 +61,11 @@ const HomePage = () => {
             <h3>AI Portfolio Generator</h3>
             <p>Convert resume information into a professional portfolio with project ideas and website generation.</p>
           </div>
+          
+          <div className="feature-card">
+            <h3>AI Mentor Chat</h3>
+            <p>Get personalized career guidance, skill recommendations, and project ideas from our AI mentor based on your resume and career goals.</p>
+          </div>
         </div>
       </section>
 

@@ -9,18 +9,30 @@ const BiasChecker = () => {
   const [loading, setLoading] = useState(false);
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [error, setError] = useState('');
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    setFile(selectedFile);
+    setError('');
     
     if (selectedFile) {
+      // Check file size (max 5MB)
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        setError('File size exceeds 5MB limit');
+        return;
+      }
+      
+      setFile(selectedFile);
+      
       // For text files, read content directly
       if (selectedFile.type === 'text/plain' || selectedFile.name.endsWith('.txt')) {
         const reader = new FileReader();
         reader.onload = (event) => {
           setResumeText(event.target.result);
           setIsFileUploaded(true);
+        };
+        reader.onerror = () => {
+          setError('Error reading file');
         };
         reader.readAsText(selectedFile);
       } else {
@@ -46,6 +58,13 @@ const BiasChecker = () => {
     
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const selectedFile = e.dataTransfer.files[0];
+      
+      // Check file size (max 5MB)
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        setError('File size exceeds 5MB limit');
+        return;
+      }
+      
       setFile(selectedFile);
       
       if (selectedFile) {
@@ -55,6 +74,9 @@ const BiasChecker = () => {
           reader.onload = (event) => {
             setResumeText(event.target.result);
             setIsFileUploaded(true);
+          };
+          reader.onerror = () => {
+            setError('Error reading file');
           };
           reader.readAsText(selectedFile);
         } else {
@@ -69,11 +91,13 @@ const BiasChecker = () => {
     e.preventDefault();
     
     if (!isFileUploaded) {
-      alert('Please upload a resume file first');
+      setError('Please upload a resume file first');
       return;
     }
 
     setLoading(true);
+    setError('');
+    
     try {
       let textToSend = resumeText;
       
@@ -92,8 +116,6 @@ const BiasChecker = () => {
           const uploadData = await uploadResponse.json();
           if (uploadData.extractedInfo) {
             // Extract text content from parsed resume
-            // This is a simplified approach - in a real implementation, 
-            // you might want to reconstruct the full text from the parsed data
             const contactInfo = uploadData.extractedInfo.contact_info;
             const skills = uploadData.extractedInfo.skills;
             
@@ -105,7 +127,6 @@ const BiasChecker = () => {
               textToSend += `Phone: ${contactInfo.phones[0]}\n`;
             }
             textToSend += `Skills: ${skills ? skills.join(', ') : ''}\n`;
-            // Add more content reconstruction as needed
           }
         } else {
           throw new Error('Failed to upload and parse resume');
@@ -117,10 +138,16 @@ const BiasChecker = () => {
       }
       
       const response = await checkBias({ resumeText: textToSend });
-      setCheckResult(response.data);
+      
+      if (response && response.data) {
+        setCheckResult(response.data);
+      } else {
+        throw new Error('Invalid response from bias checker');
+      }
     } catch (error) {
       console.error('Bias check error:', error);
-      setCheckResult({ error: 'Failed to check for bias: ' + error.message });
+      setError('Failed to check for bias: ' + (error.message || 'Unknown error'));
+      setCheckResult(null);
     } finally {
       setLoading(false);
     }
@@ -140,9 +167,18 @@ const BiasChecker = () => {
     }
   };
 
+  const resetForm = () => {
+    setFile(null);
+    setResumeText('');
+    setCheckResult(null);
+    setIsFileUploaded(false);
+    setError('');
+  };
+
   return (
     <div className="bias-checker">
       <h2>Bias & Inclusivity Checker</h2>
+      {error && <div className="error">{error}</div>}
       <form onSubmit={handleCheck}>
         <div 
           className={`file-upload-area ${isDragOver ? 'drag-over' : ''}`}
@@ -170,6 +206,9 @@ const BiasChecker = () => {
         <button type="submit" disabled={loading || !isFileUploaded}>
           {loading ? 'Checking...' : 'Check for Bias'}
         </button>
+        <button type="button" onClick={resetForm} style={{ marginTop: '10px', background: '#6b7280' }}>
+          Reset
+        </button>
       </form>
       
       {checkResult && (
@@ -179,7 +218,7 @@ const BiasChecker = () => {
           
           <div className="bias-issues-container">
             <h4>🔍 Potential Bias Issues Found:</h4>
-            {checkResult.biasIssues.length > 0 ? (
+            {checkResult.biasIssues && checkResult.biasIssues.length > 0 ? (
               <div className="issues-grid">
                 {checkResult.biasIssues.map((issue, index) => (
                   <div key={index} className="issue-card">
@@ -208,35 +247,39 @@ const BiasChecker = () => {
             )}
           </div>
           
-          <div className="pronouns-section">
-            <h4>👥 Gender Pronoun Usage:</h4>
-            <div className="pronouns-stats">
-              <div className="stat-card">
-                <div className="stat-value">{checkResult.genderPronouns.masculine}</div>
-                <div className="stat-label">Masculine</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-value">{checkResult.genderPronouns.feminine}</div>
-                <div className="stat-label">Feminine</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-value">{checkResult.genderPronouns.neutral}</div>
-                <div className="stat-label">Neutral</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="improvement-suggestions">
-            <h4>✨ Suggestions for Improvement:</h4>
-            <div className="suggestions-list">
-              {checkResult.suggestions.map((suggestion, index) => (
-                <div key={index} className="suggestion-item">
-                  <span className="suggestion-number">{index + 1}.</span>
-                  <span className="suggestion-text">{suggestion}</span>
+          {checkResult.genderPronouns && (
+            <div className="pronouns-section">
+              <h4>👥 Gender Pronoun Usage:</h4>
+              <div className="pronouns-stats">
+                <div className="stat-card">
+                  <div className="stat-value">{checkResult.genderPronouns.masculine || 0}</div>
+                  <div className="stat-label">Masculine</div>
                 </div>
-              ))}
+                <div className="stat-card">
+                  <div className="stat-value">{checkResult.genderPronouns.feminine || 0}</div>
+                  <div className="stat-label">Feminine</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-value">{checkResult.genderPronouns.neutral || 0}</div>
+                  <div className="stat-label">Neutral</div>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+          
+          {checkResult.suggestions && checkResult.suggestions.length > 0 && (
+            <div className="improvement-suggestions">
+              <h4>✨ Suggestions for Improvement:</h4>
+              <div className="suggestions-list">
+                {checkResult.suggestions.map((suggestion, index) => (
+                  <div key={index} className="suggestion-item">
+                    <span className="suggestion-number">{index + 1}.</span>
+                    <span className="suggestion-text">{suggestion}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           
           {checkResult.correctedText && (
             <div className="corrected-resume-section">

@@ -812,6 +812,261 @@ class AICareerEngine:
             ]
             return fallback_questions
 
+    def get_ai_mentor_response(self, user_query, resume_data):
+        """Generate personalized career guidance based on user query and resume data"""
+        try:
+            # Extract key information from resume
+            skills = resume_data.get('skills', [])
+            experience = resume_data.get('experience', '')
+            education = resume_data.get('education', '')
+            projects = resume_data.get('projects', '')
+            
+            # Get trending skills and job data for context
+            trending_skills = self.get_trending_skills()
+            job_data = self.jobs_database
+            
+            # Process user query with spaCy
+            doc = nlp(user_query.lower())
+            
+            # Identify key entities and intent
+            entities = [ent.text for ent in doc.ents]
+            nouns = [token.text for token in doc if token.pos_ == 'NOUN']
+            verbs = [token.text for token in doc if token.pos_ == 'VERB']
+            
+            # Keywords for different intents
+            learning_keywords = ['learn', 'skill', 'course', 'study', 'education', 'improve', 'develop']
+            project_keywords = ['project', 'build', 'create', 'develop', 'make']
+            career_keywords = ['career', 'job', 'position', 'role', 'work', 'employment']
+            resource_keywords = ['resource', 'youtube', 'coursera', 'udemy', 'tutorial', 'guide']
+            
+            # Determine intent based on keywords
+            intent = 'general'
+            if any(keyword in user_query.lower() for keyword in learning_keywords):
+                intent = 'learning'
+            elif any(keyword in user_query.lower() for keyword in project_keywords):
+                intent = 'project'
+            elif any(keyword in user_query.lower() for keyword in career_keywords):
+                intent = 'career'
+            elif any(keyword in user_query.lower() for keyword in resource_keywords):
+                intent = 'resource'
+            
+            # Generate response based on intent
+            response = ""
+            
+            if intent == 'learning':
+                # Learning guidance
+                response = self._generate_learning_guidance(user_query, skills, trending_skills)
+            elif intent == 'project':
+                # Project suggestions
+                response = self._generate_project_suggestions(user_query, skills, projects)
+            elif intent == 'career':
+                # Career advice
+                response = self._generate_career_advice(user_query, skills, experience, job_data)
+            elif intent == 'resource':
+                # Resource recommendations
+                response = self._generate_resource_recommendations(user_query, skills)
+            else:
+                # General guidance
+                response = self._generate_general_guidance(user_query, skills, experience, education, projects)
+            
+            return {
+                "response": response,
+                "intent": intent,
+                "skills_analyzed": skills[:5],  # Top 5 skills
+                "confidence": 0.85  # Confidence score (simplified)
+            }
+        except Exception as e:
+            print(f"Error in AI mentor response generation: {e}")
+            return {
+                "response": "I'm sorry, I'm having trouble processing your request right now. Could you rephrase your question?",
+                "intent": "error",
+                "skills_analyzed": [],
+                "confidence": 0.0
+            }
+    
+    def _generate_learning_guidance(self, query, skills, trending_skills):
+        """Generate learning guidance based on user query and skills"""
+        # Extract skill from query
+        query_skills = []
+        for skill in skills:
+            if skill.lower() in query.lower():
+                query_skills.append(skill)
+        
+        # If no specific skill mentioned, suggest based on trending skills
+        if not query_skills:
+            # Find skills gap by comparing user skills with trending skills
+            user_skill_names = [skill.lower() for skill in skills]
+            trending_skill_names = [skill['skill'].lower() for skill in trending_skills]
+            
+            # Suggest trending skills not in user's skill set
+            suggested_skills = []
+            for trending_skill in trending_skills:
+                if trending_skill['skill'].lower() not in user_skill_names:
+                    suggested_skills.append(trending_skill)
+            
+            if suggested_skills:
+                top_suggestion = suggested_skills[0]
+                return f"Based on current market trends, I recommend learning {top_suggestion['skill']}. {top_suggestion['description']}. With a growth rate of {top_suggestion['growth_rate']}%, this skill is highly valuable right now."
+            else:
+                return "You have a strong skill set! To continue growing, consider deepening your expertise in your current skills or exploring adjacent technologies."
+        else:
+            # Provide specific learning guidance for mentioned skills
+            skill = query_skills[0]
+            return f"To improve your {skill} skills, I recommend: 1) Practice with real-world projects, 2) Take online courses from platforms like Coursera or Udemy, 3) Join relevant communities for knowledge sharing, 4) Contribute to open-source projects. Would you like specific resource recommendations for {skill}?"
+    
+    def _generate_project_suggestions(self, query, skills, projects):
+        """Generate project suggestions based on user skills"""
+        # Extract skill from query
+        query_skills = []
+        for skill in skills:
+            if skill.lower() in query.lower():
+                query_skills.append(skill)
+        
+        # Project templates based on skills
+        project_templates = {
+            'python': [
+                "Build a web scraper to collect and analyze data from multiple sources",
+                "Create a machine learning model to predict stock prices or weather patterns",
+                "Develop a personal finance tracker with data visualization"
+            ],
+            'javascript': [
+                "Build a real-time chat application using WebSockets",
+                "Create a task management app with drag-and-drop functionality",
+                "Develop a browser extension for productivity enhancement"
+            ],
+            'react': [
+                "Build a social media dashboard with real-time updates",
+                "Create an e-commerce platform with payment integration",
+                "Develop a portfolio website with interactive animations"
+            ],
+            'data science': [
+                "Analyze COVID-19 data to identify trends and patterns",
+                "Build a recommendation system for movies or products",
+                "Create a dashboard to visualize business metrics"
+            ],
+            'machine learning': [
+                "Develop an image classification model for specific use cases",
+                "Create a natural language processing tool for sentiment analysis",
+                "Build a predictive maintenance system for industrial equipment"
+            ]
+        }
+        
+        # Find matching projects
+        suggestions = []
+        if query_skills:
+            for skill in query_skills:
+                skill_lower = skill.lower()
+                for key, projects in project_templates.items():
+                    if key in skill_lower or skill_lower in key:
+                        suggestions.extend(projects)
+        else:
+            # Suggest projects based on user's top skills
+            for skill in skills[:3]:  # Top 3 skills
+                skill_lower = skill.lower()
+                for key, projects in project_templates.items():
+                    if key in skill_lower or skill_lower in key:
+                        suggestions.extend(projects)
+        
+        if suggestions:
+            return f"Here are some project ideas to prove your skills: 1) {suggestions[0]}, 2) {suggestions[1] if len(suggestions) > 1 else 'Build a personal website showcasing your work'}, 3) {suggestions[2] if len(suggestions) > 2 else 'Contribute to an open-source project'}. These projects will help demonstrate your practical abilities to potential employers."
+        else:
+            return "I'd be happy to suggest projects! Could you tell me more about what specific skills you'd like to showcase or what type of project interests you?"
+    
+    def _generate_career_advice(self, query, skills, experience, job_data):
+        """Generate career advice based on user profile"""
+        # Analyze skills match with job data
+        skill_matches = {}
+        for job in job_data[:10]:  # Top 10 jobs
+            match_count = 0
+            for skill in skills:
+                if skill.lower() in ' '.join(job.get('required_skills', [])).lower():
+                    match_count += 1
+            if match_count > 0:
+                skill_matches[job['title']] = match_count
+        
+        # Sort jobs by match count
+        sorted_matches = sorted(skill_matches.items(), key=lambda x: x[1], reverse=True)
+        
+        if sorted_matches:
+            best_match = sorted_matches[0][0]
+            match_count = sorted_matches[0][1]
+            return f"Based on your skills, you're well-suited for roles like {best_match}. You match {match_count} required skills for this position. To strengthen your profile, consider gaining experience in the remaining required skills. Your current experience in '{experience[:100]}...' shows good foundation. Would you like specific advice on transitioning to {best_match}?"
+        else:
+            return "Your skill set is quite unique! To enhance your career prospects, consider specializing in a specific domain or acquiring skills that are in high demand. Based on your experience '{experience[:100]}...', you might want to explore roles that value diverse skill sets."
+    
+    def _generate_resource_recommendations(self, query, skills):
+        """Generate learning resource recommendations"""
+        # Extract skill from query
+        query_skills = []
+        for skill in skills:
+            if skill.lower() in query.lower():
+                query_skills.append(skill)
+        
+        # Resource recommendations by skill
+        resources = {
+            'python': [
+                "Coursera: Python for Everybody by University of Michigan",
+                "YouTube: Corey Schafer's Python Tutorials",
+                "Book: 'Automate the Boring Stuff with Python'"
+            ],
+            'javascript': [
+                "freeCodeCamp: JavaScript Algorithms and Data Structures",
+                "YouTube: The Net Ninja's JavaScript Tutorials",
+                "Book: 'Eloquent JavaScript' by Marijn Haverbeke"
+            ],
+            'react': [
+                "Udemy: React - The Complete Guide by Maximilian Schwarzmüller",
+                "YouTube: React Tutorial for Beginners by Programming with Mosh",
+                "Official React Documentation and Tutorial"
+            ],
+            'data science': [
+                "Coursera: IBM Data Science Professional Certificate",
+                "Kaggle Learn Micro-Courses",
+                "Book: 'Python for Data Analysis' by Wes McKinney"
+            ],
+            'machine learning': [
+                "Coursera: Machine Learning by Andrew Ng",
+                "fast.ai: Practical Deep Learning for Coders",
+                "Book: 'Hands-On Machine Learning' by Aurélien Géron"
+            ]
+        }
+        
+        recommendations = []
+        if query_skills:
+            for skill in query_skills:
+                skill_lower = skill.lower()
+                for key, res in resources.items():
+                    if key in skill_lower or skill_lower in key:
+                        recommendations.extend(res)
+        else:
+            # General recommendations based on top skills
+            for skill in skills[:3]:
+                skill_lower = skill.lower()
+                for key, res in resources.items():
+                    if key in skill_lower or skill_lower in key:
+                        recommendations.extend(res)
+        
+        if recommendations:
+            return f"Here are some excellent resources: 1) {recommendations[0]}, 2) {recommendations[1] if len(recommendations) > 1 else 'Join relevant online communities'}, 3) {recommendations[2] if len(recommendations) > 2 else 'Practice on platforms like HackerRank or LeetCode'}. These will help you master the skills effectively."
+        else:
+            return "I recommend starting with foundational resources like freeCodeCamp, Coursera, or edX courses. These platforms offer comprehensive learning paths for various technologies. What specific skill would you like to focus on?"
+    
+    def _generate_general_guidance(self, query, skills, experience, education, projects):
+        """Generate general career guidance"""
+        # Create a comprehensive profile summary
+        profile_summary = f"You have skills in {', '.join(skills[:5])} and experience in '{experience[:50]}...'. "
+        
+        # Provide general advice
+        advice = [
+            "Focus on building a strong portfolio that showcases your skills and projects.",
+            "Network with professionals in your field through LinkedIn and industry events.",
+            "Stay updated with industry trends by following relevant blogs and publications.",
+            "Consider obtaining certifications in your area of expertise to validate your skills.",
+            "Set specific, measurable career goals and create a plan to achieve them."
+        ]
+        
+        return f"{profile_summary}Here's some general advice: {advice[0]} {advice[1]} {advice[2]} {advice[3]} {advice[4]} Would you like more specific guidance on any particular aspect of your career development?"
+
     def parse_resume(self, file_path, file_type):
         """Main function to parse resume"""
         # Extract text based on file type
@@ -877,6 +1132,11 @@ if __name__ == "__main__":
         elif operation == "predict_questions" and len(sys.argv) >= 3:
             resume_data = json.loads(sys.argv[2])
             result = engine.predict_interview_questions(resume_data)
+            print(json.dumps(result))
+        elif operation == "ai_mentor" and len(sys.argv) >= 4:
+            user_query = sys.argv[2]
+            resume_data = json.loads(sys.argv[3])
+            result = engine.get_ai_mentor_response(user_query, resume_data)
             print(json.dumps(result))
         else:
             print(json.dumps({"error": "Invalid operation or arguments"}))

@@ -229,11 +229,50 @@ const predictInterviewQuestions = (resumeData) => {
   });
 };
 
+// Function to call Python script for AI mentor responses
+const getAIMentorResponse = (userQuery, resumeData) => {
+  return new Promise((resolve, reject) => {
+    // Path to Python executable in virtual environment
+    const pythonPath = path.join(__dirname, '..', 'ai_career_env', 'Scripts', 'python.exe');
+    
+    // Path to Python script
+    const scriptPath = path.join(__dirname, 'ai_career_engine.py');
+    
+    // Spawn Python process
+    const pythonProcess = spawn(pythonPath, [scriptPath, 'ai_mentor', userQuery, JSON.stringify(resumeData)]);
+    
+    let stdoutData = '';
+    let stderrData = '';
+    
+    pythonProcess.stdout.on('data', (data) => {
+      stdoutData += data.toString();
+    });
+    
+    pythonProcess.stderr.on('data', (data) => {
+      stderrData += data.toString();
+    });
+    
+    pythonProcess.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error(`Python script exited with code ${code}: ${stderrData}`));
+      } else {
+        try {
+          const result = JSON.parse(stdoutData);
+          resolve(result);
+        } catch (parseError) {
+          reject(new Error(`Failed to parse Python output: ${parseError.message}`));
+        }
+      }
+    });
+  });
+};
+
 module.exports = {
   parseResume,
   matchJob,
   getJobRecommendations,
   getTrendingSkills,
   predictFutureSkillsML,
-  predictInterviewQuestions
+  predictInterviewQuestions,
+  getAIMentorResponse
 };

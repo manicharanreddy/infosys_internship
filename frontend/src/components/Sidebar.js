@@ -13,6 +13,7 @@ const Sidebar = ({ user, onLogout }) => {
     { name: 'Career Path', path: '/career-path', icon: '📈' },
     { name: 'Future Skills', path: '/future-skills', icon: '🔮' },
     { name: 'Bias Checker', path: '/bias-checker', icon: '✅' },
+    { name: 'AI Mentor Chat', path: '/ai-mentor', icon: '🤖' },
     { name: 'Portfolio Generator', path: '/portfolio-generator', icon: '📁' },
     { name: 'Interview Practice', path: '/interview-practice', icon: '💬' },
     { name: 'Profile', path: '/profile', icon: '👤' },

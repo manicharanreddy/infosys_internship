@@ -102,21 +102,30 @@ const PortfolioGenerator = ({ resumeData: propResumeData }) => {
       let dataToUse = {};
       
       if (extractedData) {
-        // Extract data from parsed resume
+        // Extract data from parsed resume with better formatting
         const contactInfo = extractedData.contact_info || {};
         const skills = extractedData.skills || [];
         const experience = extractedData.experience || "Experience details would be extracted from resume";
         const education = extractedData.education || "Education details would be extracted from resume";
         const projects = extractedData.projects || "Project details would be extracted from resume";
         
+        // Better formatting for experience and education
+        const formatText = (text) => {
+          if (typeof text === 'string' && text.length > 10) {
+            // Clean up extra whitespace and newlines
+            return text.trim();
+          }
+          return text;
+        };
+        
         dataToUse = {
           name: contactInfo.name || "Unknown",
           email: (contactInfo.emails && contactInfo.emails[0]) || "unknown@example.com",
           phone: (contactInfo.phones && contactInfo.phones[0]) || "N/A",
           skills: skills.join(', '),
-          experience: experience,
-          education: education,
-          projects: projects
+          experience: formatText(experience),
+          education: formatText(education),
+          projects: formatText(projects)
         };
       } else if (propResumeData) {
         // Fallback to prop data
@@ -264,8 +273,7 @@ const PortfolioGenerator = ({ resumeData: propResumeData }) => {
                     Copy
                   </button>
                 </div>
-                <a 
-                  href="#" 
+                <button 
                   className="view-portfolio-button"
                   onClick={(e) => {
                     e.preventDefault();
@@ -273,7 +281,7 @@ const PortfolioGenerator = ({ resumeData: propResumeData }) => {
                   }}
                 >
                   👁️ View Portfolio
-                </a>
+                </button>
               </div>
             </div>
           </div>

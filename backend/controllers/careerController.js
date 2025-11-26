@@ -145,7 +145,7 @@ const generatePortfolio = (req, res) => {
   const { name, email, phone, skills, experience, education, projects } = req.body;
   const skillsArray = skills.split(',').map(skill => skill.trim()).filter(skill => skill);
   
-  // Parse projects from resume text
+  // Enhanced project parsing with better logic
   let parsedProjects = [];
   
   if (projects && projects !== "Project details would be extracted from resume" && projects.trim().length > 10) {
@@ -161,37 +161,50 @@ const generatePortfolio = (req, res) => {
         const lines = cleanSection.split('\n').filter(line => line.trim().length > 0);
         
         if (lines.length > 0) {
-          // First line is typically the project title
-          let title = lines[0].replace(/^[-\d.\s]+/, '').trim(); // Remove leading dashes/numbers
+          // Enhanced title extraction
+          let title = "";
+          let description = "";
+          let technologies = [];
           
-          // If the title is too long, it might be the description, so try to extract a better title
-          if (title.length > 50) {
-            // Look for project name patterns
-            const projectTitleMatch = title.match(/(?:project|developed|built|created)?\s*:?\s*([A-Z][a-zA-Z0-9\s\-_]+?)(?:\s*-|\s*[-–—]|\s*$)/i);
+          // First line is typically the project title
+          const firstLine = lines[0].replace(/^[-\d.\s]+/, '').trim();
+          
+          // Check if first line contains project indicators
+          if (firstLine.toLowerCase().includes('project') || 
+              firstLine.toLowerCase().includes('developed') || 
+              firstLine.toLowerCase().includes('built') || 
+              firstLine.toLowerCase().includes('created')) {
+            title = firstLine;
+          } else {
+            // Look for project title patterns
+            const projectTitleMatch = firstLine.match(/([A-Z][a-zA-Z0-9\s\-_]+?)(?:\s*-|\s*[-–—]|\s*$)/);
             if (projectTitleMatch) {
               title = projectTitleMatch[1].trim();
             } else {
-              // Just take the first 30 characters as title
-              title = title.substring(0, 30) + '...';
+              title = firstLine.substring(0, 50) + (firstLine.length > 50 ? '...' : '');
             }
           }
           
           // Rest of the lines are the description
-          const description = lines.slice(1).join(' ').trim() || lines[0].trim();
+          description = lines.slice(1).join(' ').trim() || lines[0].trim();
           
-          // Extract technologies from skills that might be mentioned in the project
+          // Extract technologies from the section and match with user skills
+          const sectionText = section.toLowerCase();
           const projectSkills = skillsArray.filter(skill => 
-            section.toLowerCase().includes(skill.toLowerCase())
+            sectionText.includes(skill.toLowerCase())
           );
           
           // If no skills found in project, use top 3 skills
-          const technologies = projectSkills.length > 0 ? projectSkills : skillsArray.slice(0, 3);
+          technologies = projectSkills.length > 0 ? projectSkills : skillsArray.slice(0, 3);
           
-          parsedProjects.push({
-            title: title || `Project ${index + 1}`,
-            description: description || section,
-            technologies: technologies
-          });
+          // Only add project if it has meaningful content
+          if (title.length > 3 && (description.length > 20 || technologies.length > 0)) {
+            parsedProjects.push({
+              title: title,
+              description: description,
+              technologies: technologies
+            });
+          }
         }
       });
     }
@@ -206,7 +219,8 @@ const generatePortfolio = (req, res) => {
         const cleanLine = line.trim();
         // Check if this line starts a new project (bullet point, numbered list, or capitalized start)
         if (/^[-*•\d]+\s+/i.test(cleanLine) || /^[A-Z]/.test(cleanLine)) {
-          if (currentProject) {
+          // Save previous project if it exists
+          if (currentProject && currentProject.description.length > 20) {
             parsedProjects.push(currentProject);
           }
           
@@ -224,7 +238,7 @@ const generatePortfolio = (req, res) => {
       });
       
       // Don't forget the last project
-      if (currentProject) {
+      if (currentProject && currentProject.description.length > 20) {
         parsedProjects.push(currentProject);
       }
     }
@@ -319,9 +333,46 @@ const predictInterviewQuestions = async (req, res) => {
   }
 };
 
+// Get AI Mentor response
+const getAIMentorResponse = async (req, res) => {
+  try {
+    console.log('Received request body:', req.body);
+    const { query, resumeData } = req.body;
+    console.log('Query:', query);
+    console.log('Resume Data:', resumeData);
+    
+    // Extract only the necessary data to avoid circular references
+    const cleanResumeData = {
+      skills: resumeData?.skills || [],
+      experience: resumeData?.experience || "",
+      education: resumeData?.education || "",
+      projects: resumeData?.projects || "",
+      contact_info: resumeData?.contact_info || {}
+    };
+    console.log('Clean Resume Data:', cleanResumeData);
+    
+    // Call Python script to get AI mentor response
+    const { getAIMentorResponse: getPythonAIMentorResponse } = require('../utils/python_bridge');
+    const response = await getPythonAIMentorResponse(query, cleanResumeData);
+    console.log('Python Response:', response);
+    
+    // Return the full response from Python
+    res.json(response);
+  } catch (error) {
+    console.error('AI Mentor response error:', error);
+    res.status(500).json({ 
+      response: "I'm sorry, I'm having trouble responding right now. Please try again later.",
+      intent: "error",
+      skills_analyzed: [],
+      confidence: 0.0
+    });
+  }
+};
+
 module.exports = {
   predictFutureSkills,
   checkBias,
   generatePortfolio,
-  predictInterviewQuestions
+  predictInterviewQuestions,
+  getAIMentorResponse
 };

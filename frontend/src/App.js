@@ -13,6 +13,7 @@ import FutureSkillPredictor from './components/FutureSkillPredictor';
 import BiasChecker from './components/BiasChecker';
 import PortfolioGenerator from './components/PortfolioGenerator';
 import InterviewPractice from './components/InterviewPractice';
+import AIMentorChat from './components/AIMentorChat';
 import Profile from './pages/Profile';
 import './styles/globals.css';
 import './styles/App.css';
@@ -55,6 +56,20 @@ function App() {
       }
     };
 
+    // Load resume data from localStorage if available
+    const savedResumeData = localStorage.getItem('resumeData');
+    if (savedResumeData) {
+      try {
+        const parsedData = JSON.parse(savedResumeData);
+        setResumeData(parsedData);
+        if (parsedData.skills) {
+          setResumeSkills(parsedData.skills);
+        }
+      } catch (e) {
+        console.error('Error parsing saved resume data:', e);
+      }
+    }
+
     // Check authentication on initial load
     checkUserAuth();
 
@@ -78,12 +93,17 @@ function App() {
       setResumeSkills(extractedInfo.skills);
     }
     setResumeData(extractedInfo);
+    // Save resume data to localStorage
+    localStorage.setItem('resumeData', JSON.stringify(extractedInfo));
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('resumeData');
     setUser(null);
+    setResumeData(null);
+    setResumeSkills([]);
   };
 
   const isAuthenticated = () => {
@@ -194,6 +214,20 @@ function App() {
                   <p>Prepare for interviews with AI-generated questions</p>
                 </header>
                 <InterviewPractice resumeData={resumeData} />
+              </div>
+            </main>
+          </div>
+        ) : <Navigate to="/login" />} />
+        <Route path="/ai-mentor" element={isAuthenticated() ? (
+          <div className="app-layout">
+            <Sidebar user={user} onLogout={handleLogout} />
+            <main className="main-content with-sidebar">
+              <div className="tool-page">
+                <header className="tool-header">
+                  <h1>AI Career Mentor</h1>
+                  <p>Get personalized career guidance based on your resume</p>
+                </header>
+                <AIMentorChat resumeData={resumeData} />
               </div>
             </main>
           </div>

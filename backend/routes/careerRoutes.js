@@ -4,7 +4,8 @@ const {
   predictFutureSkills,
   checkBias,
   generatePortfolio,
-  predictInterviewQuestions
+  predictInterviewQuestions,
+  getAIMentorResponse
 } = require('../controllers/careerController');
 
 // Future skill prediction endpoint
@@ -18,5 +19,8 @@ router.post('/generate-portfolio', generatePortfolio);
 
 // Interview question prediction endpoint
 router.post('/predict-interview-questions', predictInterviewQuestions);
+
+// AI Mentor chat endpoint
+router.post('/ai-mentor', getAIMentorResponse);
 
 module.exports = router;

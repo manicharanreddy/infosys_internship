@@ -41,4 +41,8 @@ export const predictInterviewQuestions = (data) => {
   return api.post('/career/predict-interview-questions', data);
 };
 
+export const getAIMentorResponse = (data) => {
+  return api.post('/career/ai-mentor', data);
+};
+
 export default api;
